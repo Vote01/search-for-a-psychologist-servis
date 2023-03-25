@@ -1,0 +1,47 @@
+﻿@model IEnumerable<servis.Models.GetSession>
+
+@{
+    ViewData["Title"] = "Выбор дня сессии";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date_Session)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Format_Session)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Psychologist_obj)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date_Session)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Format_Session)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Psychologist_obj.ID)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Session_ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Session_ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Session_ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
