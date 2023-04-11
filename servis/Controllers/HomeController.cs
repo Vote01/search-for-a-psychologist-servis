@@ -20,6 +20,7 @@ namespace servis.Controllers
 
         public IActionResult Privacy()
         {
+          //  return View("~/Views/Psychologists/Index.cshtml");
             return View();
         }
 

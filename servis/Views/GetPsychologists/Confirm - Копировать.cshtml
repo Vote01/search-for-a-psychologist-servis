@@ -78,7 +78,7 @@
 <div>
     <form asp-action="Confirm">
         <input type="hidden" name="id" value="@ViewBag.Psychologist_id" />
-        @*<input type="hidden" name="Session_ID" value="@Model.Session_ID" />*@
+        <input type="hidden" name="Session_ID" value="@Model.Session_ID" />
         <input type="submit" value="Подтвердить" class="btn btn-success" />
     </form>
     <a asp-action="Index">Отмена</a>

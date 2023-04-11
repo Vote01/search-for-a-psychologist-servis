@@ -11,13 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<PsychologistDBContext>(options =>
- options.UseSqlServer(builder.Configuration.GetConnectionString("PsychologistDB")));
+ options.UseSqlServer(builder.Configuration.GetConnectionString("MainBase")));
 
-builder.Services.AddDefaultIdentity<servisUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDbContext<servisContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MainBase")));
+
+builder.Services.AddIdentity<servisUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<servisContext>();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-   .AddEntityFrameworkStores<servisContext>();
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {
@@ -39,7 +40,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication();
 
 app.UseAuthorization();
 

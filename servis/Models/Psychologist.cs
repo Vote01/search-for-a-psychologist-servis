@@ -26,6 +26,7 @@ namespace servis.Models
         [Display(Name = "Специализация")]
         public Specialization? Specialization_obj { get; set; }
 
+        public string? Photo { get; set; }
 
     }
 

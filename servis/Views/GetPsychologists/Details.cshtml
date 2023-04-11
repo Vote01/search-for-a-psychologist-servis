@@ -53,6 +53,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Choose" asp-route-id="@Model?.ID">Выбрать</a> |
+     <form asp-action="Choose">
+        <input type="hidden" name="id" value="@ViewBag.Psychologist_id" />
+        <input type="submit" value="Выбрать" class="btn btn-success" />
+    </form>
+  @*  <a asp-action="Choose" asp-route-id="@Model?.ID">Выбрать</a> |*@
     <a asp-action="Index">Обратно</a>
 </div>

@@ -6,16 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using servis.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace servis.Controllers
 {
+   [Authorize]
     public class PsychologistsController : Controller
     {
         private readonly PsychologistDBContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public PsychologistsController(PsychologistDBContext context)
+
+        public PsychologistsController(PsychologistDBContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Psychologists
@@ -33,6 +38,7 @@ namespace servis.Controllers
                 return NotFound();
             }
 
+
             var psychologist = await _context.Psychologist
                 .Include(p => p.Methods_obj)
                 .Include(p => p.Specialization_obj)
@@ -41,6 +47,17 @@ namespace servis.Controllers
             {
                 return NotFound();
             }
+            if (!String.IsNullOrEmpty(psychologist.Photo))
+            {
+                byte[] photodata =
+               System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + psychologist.Photo);
+                ViewBag.Photodata = photodata;
+            }
+            else
+            {
+                ViewBag.Photodata = null;
+            }
+           
 
             return View(psychologist);
         }
@@ -58,10 +75,20 @@ namespace servis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] Psychologist psychologist)
+        public async Task<IActionResult> Create([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] Psychologist psychologist, IFormFile upload)
         {
             if (ModelState.IsValid)
             {
+                if (upload != null)
+                {
+                    string path = "/Files/" + upload.FileName;
+                    using (var fileStream = new
+                   FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await upload.CopyToAsync(fileStream);
+                    }
+                    psychologist.Photo = path;
+                }
                 _context.Add(psychologist);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -84,6 +111,17 @@ namespace servis.Controllers
             {
                 return NotFound();
             }
+
+            if (!String.IsNullOrEmpty(psychologist.Photo))
+            {
+                byte[] photodata = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + psychologist.Photo);
+
+                ViewBag.Photodata = photodata;
+            }
+            else
+            {
+                ViewBag.Photodata = null;
+            }
             ViewData["Methods_objId"] = new SelectList(_context.Methods, "Methods_ID", "Methods_Name", psychologist.Methods_objId);
             ViewData["Specialization_objId"] = new SelectList(_context.Specialization, "Special_ID", "Special_Name", psychologist.Specialization_objId);
             return View(psychologist);
@@ -94,7 +132,7 @@ namespace servis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] Psychologist psychologist)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] Psychologist psychologist, IFormFile? upload)
         {
             if (id != psychologist.ID)
             {
@@ -103,6 +141,21 @@ namespace servis.Controllers
 
             if (ModelState.IsValid)
             {
+                if (upload != null)
+                {
+                    string path = "/Files/" + upload.FileName;
+                    using (var fileStream = new
+                   FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await upload.CopyToAsync(fileStream);
+                    }
+                    if (!String.IsNullOrEmpty(psychologist.Photo))
+                    {
+                        System.IO.File.Delete(_appEnvironment.WebRootPath +psychologist.Photo);
+                    }
+                    psychologist.Photo = path;
+                }
+
                 try
                 {
                     _context.Update(psychologist);
