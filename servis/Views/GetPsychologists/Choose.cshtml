@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Choose">
+        <form asp-action="Confirm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Date_Session" class="control-label"></label>
@@ -21,97 +21,17 @@
                     <input class="form-check-input" asp-for="Format_Session" /> @Html.DisplayNameFor(model => model.Format_Session)
                 </label>
             </div>
-            <div class="form-group">
-                <label asp-for="Psychologist_objId" class="control-label"></label>
-                <select asp-for="Psychologist_objId" class ="form-control" asp-items="ViewBag.Psychologist_objId"></select>
-            </div>
-           
+
+             <input type="hidden" name="id" value="@ViewBag.Psychologist_id" />    
+           <input type="submit" value="Подтвердить" class="btn btn-success" />
         </form>
     </div>
    
-    <dl class="row">
-        <dt class = "col-sm-2">
-           
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Имя:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Фамилия:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Year)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Возраст:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.Year)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Info)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Дополнительная информация:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.Info)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Цена:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Methods_obj)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Метод:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.Methods_obj.Methods_Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Specialization_obj)
-        </dt>
-        <dd class = "col-sm-10">
-             <label class="control-label col-md-2">Специализация:</label>
-            @Html.DisplayFor(model => model.Psychologist_obj.Specialization_obj.Special_Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date_Session)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Время:</label>
-            @Html.DisplayFor(model => model.Date_Session)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Format_Session)
-        </dt>
-        <dd class = "col-sm-10">
-            <label class="control-label col-md-2">Формат:</label>
-            @Html.DisplayFor(model => model.Format_Session)
-        </dd>     
-        
-    </dl>   
 </div>
 
 <div>
-     <form asp-action="Confirm">
-        <input type="hidden" name="id" value="@ViewBag.Psychologist_id" />
-         @*<input type="hidden" name="Session_ID" value="@Model.Session_ID" />*@        
-        @* <input type="hidden" name="Date" value="@ViewBag.Date_Session" />
-         <input type="hidden" name="Format" value="@ViewBag.Format_Session" />*@
-        @* <input type="hidden" name="Date" value="@Model.Date_Session" />
-         <input type="hidden" name="Format" value="@Model.Format_Session" />*@
-        <input type="submit" value="Подтвердить" class="btn btn-success" />
-    </form>
-    @*<a asp-action="Confirm">Подтвердить</a>|*@
+
      <a asp-action="Index">Отмена</a>|
-      @*<a asp-action="Details" asp-route-id="@Model?.ID"> Отмена2</a>|*@
-        @*<a asp-action="Details"> Отмена2</a>*@
 </div>
 
 @section Scripts {

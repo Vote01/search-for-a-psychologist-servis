@@ -18,9 +18,9 @@ namespace servis.Controllers
             _context = context;
         }
 
-        public GetSessionsController()
-        {
-        }
+        //public GetSessionsController()
+        //{
+        //}
 
         // GET: GetSessions
         public async Task<IActionResult> Index()

@@ -2,6 +2,7 @@
 
 namespace servis.Models
 {
+    [ActivatorUtilitiesConstructor]
     public class GetSession
     {
         [Key]

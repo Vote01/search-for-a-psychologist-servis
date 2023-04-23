@@ -50,175 +50,85 @@ namespace servis.Controllers
         }
 
 
-        //[HttpPost]
-        //public IActionResult Choose(int id)
-        //{
-        //    ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name");
-        //    return View();
-        //}
+    
 
 
         [HttpPost]
-        public async Task<IActionResult> Choose(int id, DateTime Date_Session, bool Format_Session)
+        public async Task<IActionResult> Choose(int id)
         {
            Psychologist psychologist = await _context.Psychologist.FindAsync(id);
-
-            List<GetSession> sessions = _context.GetSession.Include(t => t.Psychologist_obj).ToList();
-            //GetSession sessions = _context.GetSession
-            //                           .Include(t => t.Psychologist_obj)
-            //                           .ToList();
             ViewBag.Psychologist_id = id;
-            ViewBag.Date_Session = Date_Session.ToLongDateString() + " " + Date_Session.ToShortTimeString();
-            ViewBag.Format = Format_Session;
-
-          
-           // return View("Confirm", sessions);
-            return View("Confirm");
+            return View("Choose");
+            // return View(psychologist);
         }
 
 
-        [HttpPost]
-        public ActionResult Confirm(int id, int Session_ID)
-        {
-            GetSession session = _context.GetSession.Find(Session_ID);
-            session.Psychologist_objId = id;
-            //_context.Entry(ticket).State = EntityState.Modified;
-            _context.SaveChanges();
+       
 
+
+        [HttpPost]
+        public async Task<ActionResult> ConfirmAsync(int id, DateTime Date_Session, bool Format_Session)
+        {
+            GetSession session=new GetSession();
+            session.Date_Session = Date_Session;
+            session.Format_Session = Format_Session;
+            Psychologist psychologist = await _context.Psychologist.FindAsync(id);
+            // Methods methods = await _context.Methods.FindAsync(psychologist.Methods_obj);          
+            session.Psychologist_obj = psychologist;
+            session.Psychologist_obj.Methods_obj = psychologist.Methods_obj;
+            session.Psychologist_obj.Specialization_obj = psychologist.Specialization_obj;
+            session.Psychologist_objId = id;
+            _context.Add(session);
+            _context.SaveChanges();
+            ViewBag.Date_Session = Date_Session.ToLongDateString() + " " + Date_Session.ToShortTimeString();
+            ViewBag.Format = Format_Session;
+
+            session = _context
+                .GetSession
+                .Include(s => s.Psychologist_obj)
+                .ThenInclude(p => p.Specialization_obj)
+                .Include(s => s.Psychologist_obj)
+                .ThenInclude(p => p.Methods_obj)
+                .First(s => s.Session_ID == session.Session_ID);
+
+            return View(session);          
+        }
+
+   
+        public IActionResult Confirm()
+        {
+            ViewData["Methods_objId"] = new SelectList(_context.Methods, "Methods_ID", "Methods_Name");
+            ViewData["Specialization_objId"] = new SelectList(_context.Specialization, "Special_ID", "Special_Name");
             return RedirectToAction("Index", "Home");
         }
 
 
-      
-
-        
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //[HttpPost]
-    //public ActionResult Choose(int id, DateTime Date_Session, bool Format_Session)
-    //// public ActionResult Choose(GetSession session)
-    //{
-    //    //GetSession session = _context.GetSession.Find(Session_ID);
-    //    //session.Psychologist_objId = id;
-    //    //_context.SaveChanges();
-    //    //_context.Add(session);
-    //    //_context.SaveChanges();
-    //    ViewBag.Psychologist_id = id;
-    //    ViewBag.Date_Session = Date_Session.ToLongDateString();
-    //    ViewBag.Format = Format_Session;
-    //    return View();
-    //}
-
-
-    //var result = new GetSessionsController().Create();
-
-
-
-    //public IActionResult Confirm()
-    //{
-
-    //    ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name");
-    //    return View();
-    //}
-
-
-    // [HttpPost]
-    
-       //public async Task<IActionResult> Confirm([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] GetSession session)
-    
-        
-        //public async Task<IActionResult> Confirm(DateTime Date_Session, bool Format_Session, int id)
-    //    //  public async Task<IActionResult> Confirm(int Session_ID)
-    //         // public async Task<IActionResult> Confirm(GetSession session)
-    //    {
-
-    //       // _context.Add(session);
-    //        _context.SaveChanges();
-    //        //await _context.SaveChangesAsync();
-    //        //GetSession session = _context.GetSession.Find(Session_ID);
-    //        //ViewBag.Psychologist_id = session.Psychologist_objId;
-    //        //ViewBag.Date_Session = session.Date_Session.ToLongDateString();
-    //        //ViewBag.Format = session.Format_Session;
-
-    //        //ViewData["Psychologist_objId"] = new SelectList(_context.GetSession, "ID", "Name", session.Psychologist_objId);
-
-    //        //session.Psychologist_objId = id;
-    //        //_context.SaveChanges();
-    //        //Psychologist psychologist = await _context.Psychologist.FindAsync(id);
-    //        //GetSession session = new GetSession();
-    //        //  GetSession session = await _context.GetSession
-    //        //.Include(t => t.Psychologist_objId)
-    //        //.FirstOrDefaultAsync(m => m.Session_ID == Session_ID);
-
-    //       // return View("Confirm", session);
-    //        return RedirectToAction("Index", "Home");
-    //       // return View(session);
-    //    }
-
-
-
-
-        //_context.Add(session);
-        //        _context.SaveChanges();
-        //       await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-
-
-        //public async Task<IActionResult> Confirm(DateTime Date_Session, bool Format_Session, int id)
-        //{
-        
-
-        //    Psychologist psychologist = await _context.Psychologist.FindAsync(id);
-           
-        //    GetSession Session = await _context.GetSession
-        //  .Include(t => t.Date_Session).Include(t => t.Format_Session).Include(t => t.Psychologist_objId)
-        //  .FirstOrDefaultAsync(m => m.Session_ID==Session_ID);
-
-        //    ViewBag.Psychologist_id = id;
-        //    ViewBag.Date_Session = Date_Session.ToLongDateString();
-        //    ViewBag.Format = Format_Session;
-
-        //    return View("Confirm",Session);
-        //}
-
-   
-
-        //[HttpPost]
-
-        //public ActionResult Confirm(int id, int Session_ID)
-        //{
-        //    GetSession session = _context.GetSession.Find(Session_ID);
-        //    session.Psychologist_objId = id;       
-        //    _context.SaveChanges();
-        //    return RedirectToAction("Index", "Home");
-        //    //return View();
-        //}
 
 
         private bool PsychologistExists(int id)
         {
           return _context.Psychologist.Any(e => e.ID == id);
         }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Confirm ([Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId")] GetSession session)
+        //{
+        //    if (ModelState.IsValid)
+        //    {               
+        //        _context.Add(session);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return RedirectToAction("Index", "Home");
+        //}
+
+        //[HttpPost]
+        //public IActionResult Choose(int id)
+        //{
+        //    ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name");
+        //    return View();
+        //}
     }
 }

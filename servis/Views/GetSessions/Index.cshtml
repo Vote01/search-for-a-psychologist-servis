@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<servis.Models.GetSession>
 
 @{
-    ViewData["Title"] = "Выбор дня сессии";
+    ViewData["Title"] = "Список сессий";
 }
 
-<h1>Index</h1>
-
+<h1>Сессии</h1>
+@*
 <p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <a asp-action="Create">Сессии</a>
+</p>*@
 <table class="table">
     <thead>
         <tr>
@@ -34,12 +34,12 @@
                 @Html.DisplayFor(modelItem => item.Format_Session)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Psychologist_obj.ID)
+                @Html.DisplayFor(modelItem => item.Psychologist_obj.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Session_ID">Edit</a> |
+                @*<a asp-action="Edit" asp-route-id="@item.Session_ID">Edit</a> |*@
                 <a asp-action="Details" asp-route-id="@item.Session_ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Session_ID">Delete</a>
+                @*<a asp-action="Delete" asp-route-id="@item.Session_ID">Delete</a>*@
             </td>
         </tr>
 }
