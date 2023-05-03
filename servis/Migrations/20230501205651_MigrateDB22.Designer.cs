@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using servis.Models;
 
@@ -11,9 +12,10 @@ using servis.Models;
 namespace servis.Migrations
 {
     [DbContext(typeof(PsychologistDBContext))]
-    partial class PsychologistDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230501205651_MigrateDB22")]
+    partial class MigrateDB22
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +75,6 @@ namespace servis.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Psychologist_objId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status_Session")
                         .HasColumnType("int");
 
                     b.HasKey("Session_ID");

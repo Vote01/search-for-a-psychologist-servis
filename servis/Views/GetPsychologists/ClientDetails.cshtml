@@ -1,12 +1,9 @@
-﻿@model servis.Models.Psychologist
+﻿@model servis.Models.Client
 
-@{
-    ViewData["Title"] = "Подробнее";
-}
 
 <div>
-    <h4>Психолог</h4>
-    <hr />
+    <h4>Клиент</h4>
+    
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -27,36 +24,25 @@
             @Html.DisplayFor(model => model.Year)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Info)
+            @Html.DisplayNameFor(model => model.Email)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Info)
+            @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.Phone)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.Phone)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Methods_obj)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Methods_obj.Methods_Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Specialization_obj)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Specialization_obj.Special_Name)
-        </dd>
+      
     </dl>
 </div>
 <div>
-     <form asp-action="Client">
+     <form asp-action="Choose">
         <input type="hidden" name="id" value="@ViewBag.Psychologist_id" />
+         <input type="hidden" name="idC" value="@ViewBag.ClientID" />
         <input type="submit" value="Выбрать" class="btn btn-success" />
     </form>
-  @*  <a asp-action="Choose" asp-route-id="@Model?.ID">Выбрать</a> |*@
-    <a asp-action="Index">Обратно</a>
+    <a asp-action="Client">Обратно</a>
 </div>

@@ -11,7 +11,7 @@ namespace servis.Models
         public DbSet<Specialization> Specialization { get; set; }
         public DbSet<Methods> Methods { get; set; }
         public DbSet<GetSession> GetSession{ get; set; }
-        //public DbSet<GetSession> Session { get; set; }
+      
         public DbSet<Client> Client { get; set; }
 
     }

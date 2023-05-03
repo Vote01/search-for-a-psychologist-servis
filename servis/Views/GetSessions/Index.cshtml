@@ -18,8 +18,22 @@
             <th>
                 @Html.DisplayNameFor(model => model.Format_Session)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Psychologist_obj)
+            @*@if (User.IsInRole("admin")||User.IsInRole("guest"))*@
+             @if (!User.IsInRole("psych"))
+            {
+             <th>
+                    @Html.DisplayNameFor(model => model.Psychologist_obj)
+            </th>
+            }
+            @*@if (!User.IsInRole("admin") || User.IsInRole("guest"))*@
+            @if (!User.IsInRole("guest"))
+            {
+                 <th>
+                    @Html.DisplayNameFor(model => model.Client)
+            </th>
+            }
+             <th>
+                @Html.DisplayNameFor(model => model.Status_Session)
             </th>
             <th></th>
         </tr>
@@ -33,15 +47,33 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Format_Session)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Psychologist_obj.Name)
-            </td>
-            <td>
-                @*<a asp-action="Edit" asp-route-id="@item.Session_ID">Edit</a> |*@
-                <a asp-action="Details" asp-route-id="@item.Session_ID">Details</a> |
-                @*<a asp-action="Delete" asp-route-id="@item.Session_ID">Delete</a>*@
+                @*@if (User.IsInRole("admin") || User.IsInRole("guest"))*@
+                  @if (!User.IsInRole("psych"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Psychologist_obj.Name)
+                    </td>                
+
+                }
+                @if (!User.IsInRole("guest"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client.Name)
+                    </td>                
+                }
+               <td>
+                @Html.DisplayFor(modelItem => item.Status_Session)
+               </td>
+                <td>
+                <a asp-action="Details" asp-route-id="@item.Session_ID">Детали</a>            
             </td>
         </tr>
 }
     </tbody>
 </table>
+<div>
+     <form asp-action="GetReport">      
+        <input type="submit" value="Скачать отчёт" class="btn btn-success" />
+    </form>
+</div>
+

@@ -57,8 +57,9 @@ namespace servis.Controllers
             {
                 ViewBag.Photodata = null;
             }
-           
 
+            ViewData["Methods_objId"] = new SelectList(_context.Methods, "Methods_ID", "Methods_Name", psychologist.Methods_objId);
+            ViewData["Specialization_objId"] = new SelectList(_context.Specialization, "Special_ID", "Special_Name", psychologist.Specialization_objId);
             return View(psychologist);
         }
 
@@ -75,7 +76,7 @@ namespace servis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] Psychologist psychologist, IFormFile upload)
+        public async Task<IActionResult> Create([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone")] Psychologist psychologist, IFormFile upload)
         {
             if (ModelState.IsValid)
             {
@@ -132,7 +133,7 @@ namespace servis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId")] Psychologist psychologist, IFormFile? upload)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone")] Psychologist psychologist, IFormFile? upload)
         {
             if (id != psychologist.ID)
             {

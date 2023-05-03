@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using servis.Models;
 
@@ -11,9 +12,10 @@ using servis.Models;
 namespace servis.Migrations
 {
     [DbContext(typeof(PsychologistDBContext))]
-    partial class PsychologistDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230501195639_MigrateDB20")]
+    partial class MigrateDB20
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +65,6 @@ namespace servis.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Session_ID"), 1L, 1);
 
-                    b.Property<int>("ClientID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date_Session")
                         .HasColumnType("datetime2");
 
@@ -75,12 +74,7 @@ namespace servis.Migrations
                     b.Property<int>("Psychologist_objId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status_Session")
-                        .HasColumnType("int");
-
                     b.HasKey("Session_ID");
-
-                    b.HasIndex("ClientID");
 
                     b.HasIndex("Psychologist_objId");
 
@@ -170,19 +164,11 @@ namespace servis.Migrations
 
             modelBuilder.Entity("servis.Models.GetSession", b =>
                 {
-                    b.HasOne("servis.Models.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("servis.Models.Psychologist", "Psychologist_obj")
                         .WithMany()
                         .HasForeignKey("Psychologist_objId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Client");
 
                     b.Navigation("Psychologist_obj");
                 });

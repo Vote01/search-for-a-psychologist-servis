@@ -50,34 +50,65 @@ namespace servis.Controllers
         }
 
 
-    
+        public async Task<IActionResult> Client(int? id, int? idC)
+        {      
+            var psychologistDBContext = _context.Client;
+            ViewBag.Psychologist_id = id;
+            ViewBag.ClientID = idC;
+            return View(await psychologistDBContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> ClientDetails(int? id, int? idC)
+        {
+
+            if (id == null || _context.Client == null)
+            {
+                return NotFound();
+            }
+
+            var client = await _context.Client
+                .FirstOrDefaultAsync(m => m.ID == idC);
+            if (client == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Psychologist_id = id;
+            ViewBag.ClientID = idC;
+
+            return View(client);
+          
+        }
 
 
         [HttpPost]
-        public async Task<IActionResult> Choose(int id)
+        public async Task<IActionResult> Choose(int id, int idC)
         {
            Psychologist psychologist = await _context.Psychologist.FindAsync(id);
+            Client client = await _context.Client.FindAsync(idC);
             ViewBag.Psychologist_id = id;
+            ViewBag.ClientID = idC;
             return View("Choose");
             // return View(psychologist);
         }
 
 
        
-
-
         [HttpPost]
-        public async Task<ActionResult> ConfirmAsync(int id, DateTime Date_Session, bool Format_Session)
+        public async Task<ActionResult> ConfirmAsync(int id, int idC , DateTime Date_Session, Format Format_Session)
         {
             GetSession session=new GetSession();
             session.Date_Session = Date_Session;
             session.Format_Session = Format_Session;
             Psychologist psychologist = await _context.Psychologist.FindAsync(id);
+            Client client = await _context.Client.FindAsync(idC);
             // Methods methods = await _context.Methods.FindAsync(psychologist.Methods_obj);          
             session.Psychologist_obj = psychologist;
             session.Psychologist_obj.Methods_obj = psychologist.Methods_obj;
             session.Psychologist_obj.Specialization_obj = psychologist.Specialization_obj;
             session.Psychologist_objId = id;
+            session.Client = client;
+            session.ClientID = idC;
+            session.Status_Session = Status.Wait;
             _context.Add(session);
             _context.SaveChanges();
             ViewBag.Date_Session = Date_Session.ToLongDateString() + " " + Date_Session.ToShortTimeString();
@@ -90,7 +121,7 @@ namespace servis.Controllers
                 .Include(s => s.Psychologist_obj)
                 .ThenInclude(p => p.Methods_obj)
                 .First(s => s.Session_ID == session.Session_ID);
-
+           // ViewData["Format_Session"] = new SelectList(_context., "Methods_ID", "Methods_Name", psychologist.Methods_objId);
             return View(session);          
         }
 
@@ -111,24 +142,6 @@ namespace servis.Controllers
         }
 
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Confirm ([Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId")] GetSession session)
-        //{
-        //    if (ModelState.IsValid)
-        //    {               
-        //        _context.Add(session);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return RedirectToAction("Index", "Home");
-        //}
-
-        //[HttpPost]
-        //public IActionResult Choose(int id)
-        //{
-        //    ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name");
-        //    return View();
-        //}
+       
     }
 }
