@@ -1,39 +1,60 @@
-﻿@model IEnumerable<servis.Models.Psychologist>
-
+﻿@*@model IEnumerable<servis.Models.Psychologist>*@
+@model servis.Models.PsychologistFiltr
 @{
     ViewData["Title"] = "Выбор специалиста";
 }
 
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">Метод: </label>
+        @Html.DropDownList("method", Model.MethodsP as SelectList,
+                    htmlAttributes: new { @class = "form-control" })
+ 
+        <label class="control-label">Специализация: </label>
+        @Html.DropDownList("specialization", Model.SpecializationP as SelectList,
+                htmlAttributes: new { @class = "form-control" })
+ 
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Имя
+               @* @Html.DisplayNameFor(model => model.Name)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                Фамилия
+              @*  @Html.DisplayNameFor(model => model.LastName)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Year)
+                Возраст
+              @*  @Html.DisplayNameFor(model => model.Year)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Info)
+                Информация
+                @*@Html.DisplayNameFor(model => model.Info)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSort">
+                Цена
+            </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Methods_obj)
+                Методы
+               @* @Html.DisplayNameFor(model => model.Methods_obj)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Specialization_obj)
+                Специализация
+               @* @Html.DisplayNameFor(model => model.Specialization_obj)*@
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Psychologist) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)

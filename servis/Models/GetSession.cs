@@ -10,6 +10,8 @@ namespace servis.Models
         public int Session_ID { get; set; }
         
         [Display(Name = "Время сессии")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime Date_Session { get; set; }
         [Display(Name = "Формат")]
 

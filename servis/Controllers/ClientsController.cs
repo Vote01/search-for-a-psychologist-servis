@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using servis.Models;
 using Microsoft.AspNetCore.Authorization;
+using OfficeOpenXml;
 
 namespace servis.Controllers
 {
@@ -206,5 +207,44 @@ namespace servis.Controllers
         {
           return (_context.Client?.Any(e => e.ID == id)).GetValueOrDefault();
         }
+
+        public FileResult GetReport()
+        {
+            string path = "/Reports/templates/report_template_client.xlsx";
+             string result = "/Reports/report_client.xlsx";
+            FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
+            FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage excelPackage = new ExcelPackage(fi))
+            {
+                excelPackage.Workbook.Properties.Author = "Симонова А.М.";
+                excelPackage.Workbook.Properties.Title = "Список клиентов";
+                excelPackage.Workbook.Properties.Subject = "Клиенты";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Clients"];
+                int startLine = 3;
+                List<Client> clients = _context.Client.ToList();
+           
+                foreach (Client cl in clients)
+                {
+
+                
+                    worksheet.Cells[startLine, 1].Value = startLine - 2;
+                    worksheet.Cells[startLine, 2].Value = cl.ID;
+                    worksheet.Cells[startLine, 3].Value = cl.Name;
+                    worksheet.Cells[startLine, 4].Value = cl.LastName;
+                    worksheet.Cells[startLine, 5].Value = cl.Year; 
+                    worksheet.Cells[startLine, 6].Value = cl.Email;
+                    worksheet.Cells[startLine, 7].Value = cl.Phone; 
+                    startLine++;
+                }
+                excelPackage.SaveAs(fr);
+            }
+            string file_type = "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            string file_name = "report_client.xlsx";
+            return File(result, file_type, file_name);
+        }
+
+
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using servis.Models;
 using Microsoft.AspNetCore.Authorization;
+using OfficeOpenXml;
 
 namespace servis.Controllers
 {
@@ -223,5 +224,53 @@ namespace servis.Controllers
         {
           return _context.Psychologist.Any(e => e.ID == id);
         }
+
+        public FileResult GetReport()
+        {
+           
+            string path = "/Reports/templates/report_template_psychologist.xlsx";
+            string result = "/Reports/report_psychologist.xlsx";
+            FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
+            FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage excelPackage = new ExcelPackage(fi))
+            {
+                excelPackage.Workbook.Properties.Author = "Симонова А.М.";
+                excelPackage.Workbook.Properties.Title = "Список психологов";
+                excelPackage.Workbook.Properties.Subject = "Психологи";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Psychologists"];
+                int startLine = 3;
+                List<Psychologist> psychologists = _context.Psychologist.Include(p => p.Methods_obj)
+                .Include(p => p.Specialization_obj).ToList();
+                foreach (Psychologist ps in psychologists)
+                {
+
+                    worksheet.Cells[startLine, 1].Value = startLine - 2;
+                    worksheet.Cells[startLine, 2].Value = ps.ID;
+                    worksheet.Cells[startLine, 3].Value = ps.Name;
+                    worksheet.Cells[startLine, 4].Value = ps.LastName;
+                    worksheet.Cells[startLine, 5].Value = ps.Year; 
+                    worksheet.Cells[startLine, 6].Value = ps.Info;
+                    worksheet.Cells[startLine, 7].Value = ps.Price; 
+                    worksheet.Cells[startLine, 8].Value = ps.Methods_obj.Methods_Name;
+                    worksheet.Cells[startLine, 9].Value = ps.Specialization_obj.Special_Name;
+                    worksheet.Cells[startLine, 10].Value = ps.Email; 
+                    worksheet.Cells[startLine, 11].Value = ps.Phone;
+                    startLine++;
+                }
+                excelPackage.SaveAs(fr);
+            }
+            string file_type = "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            string file_name = "report_psychologist.xlsx";
+            return File(result, file_type, file_name);
+        }
+
+
+
     }
+
+
+
+
 }

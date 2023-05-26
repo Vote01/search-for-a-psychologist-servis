@@ -201,13 +201,10 @@ namespace servis.Controllers
 
         public FileResult GetReport()
         {
-            // Путь к файлу с шаблоном
-            string path = "/Reports/report_template.xlsx";
-            //Путь к файлу с результатом
-            string result = "/Reports/report.xlsx";
+            string path = "/Reports/templates/report_template_session.xlsx";
+            string result = "/Reports/report_session.xlsx";
             FileInfo fi = new FileInfo(_appEnvironment.WebRootPath + path);
             FileInfo fr = new FileInfo(_appEnvironment.WebRootPath + result);
-            //будем использовть библитотеку не для коммерческого использования
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (ExcelPackage excelPackage = new ExcelPackage(fi))
             {
@@ -215,27 +212,26 @@ namespace servis.Controllers
                 excelPackage.Workbook.Properties.Title = "Список сессий";
                 excelPackage.Workbook.Properties.Subject = "Сессии";
                 excelPackage.Workbook.Properties.Created = DateTime.Now;
-                //плучаем лист по имени.
-                ExcelWorksheet worksheet =excelPackage.Workbook.Worksheets["GetSession"];
+                ExcelWorksheet worksheet =excelPackage.Workbook.Worksheets["Sessions"];
                 int startLine = 3;
-                List<GetSession> session = _context.GetSession.ToList();
+                List<GetSession> session = _context.GetSession.Include(g => g.Psychologist_obj)
+                .Include(g => g.Client).ToList();
                 foreach (GetSession ses in session)
                 {
-                  //  Psychologist psychologist = _context.Psychologist.FindAsync(ses.Psychologist_objId);
-
                     worksheet.Cells[startLine, 1].Value = startLine - 2;
                     worksheet.Cells[startLine, 2].Value = ses.Session_ID;
-                    worksheet.Cells[startLine, 3].Value = ses.Date_Session;
+                    worksheet.Cells[startLine, 3].Value = ses.Date_Session.ToString("dd.MM.yyyy");
                     worksheet.Cells[startLine, 4].Value = ses.Format_Session;
-                    worksheet.Cells[startLine, 5].Value = ses.Psychologist_objId;
-                    //worksheet.Cells[startLine, 5].Value = ses.Psychologist_obj.Name; //работает ли
-                    //worksheet.Cells[startLine, 6].Value = ses.Psychologist_obj.LastName;
+                    worksheet.Cells[startLine, 5].Value = ses.Psychologist_obj.Name; //работает ли
+                    worksheet.Cells[startLine, 6].Value = ses.Psychologist_obj.LastName;
+                    worksheet.Cells[startLine, 7].Value = ses.Client.Name; //работает ли
+                    worksheet.Cells[startLine, 8].Value = ses.Client.LastName;
                     startLine++;
                 }
                 excelPackage.SaveAs(fr);
             }
             string file_type = "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
-            string file_name = "report.xlsx";
+            string file_name = "report_session.xlsx";
             return File(result, file_type, file_name);
         }
 

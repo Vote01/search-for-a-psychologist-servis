@@ -22,13 +22,67 @@ namespace servis.Controllers
         }
 
         // GET: GetPsychologists
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    var psychologistDBContext = _context.Psychologist.Include(p => p.Methods_obj).Include(p => p.Specialization_obj);
+        //    return View(await psychologistDBContext.ToListAsync());
+        //}
+
+        public ActionResult Index(string method, string specialization)
         {
-            var psychologistDBContext = _context.Psychologist.Include(p => p.Methods_obj).Include(p => p.Specialization_obj);
-            return View(await psychologistDBContext.ToListAsync());
+            IQueryable<Psychologist> psych = _context.Psychologist
+               .Include(p => p.Methods_obj)
+               .Include(p => p.Specialization_obj);
+
+            if (!String.IsNullOrEmpty(method) && !method.Equals("Все"))
+            {
+                psych = psych.Where(p => p.Methods_obj.Methods_Name == method);
+            }
+            if (!String.IsNullOrEmpty(specialization) && !specialization.Equals("Все"))
+            {
+                psych = psych.Where(p => p.Specialization_obj.Special_Name==specialization);
+            }
+
+            List<Methods> methods = _context.Methods.ToList();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            methods.Insert(0, new Methods { Methods_Name = "Все", Methods_ID = 0 });
+
+            PsychologistFiltr pf = new PsychologistFiltr
+            {
+                Psychologist = psych.ToList(),
+                MethodsP = new SelectList(methods, "Methods_ID", "Methods_Name"),
+                SpecializationP = new SelectList(new List<string>()
+            {
+                "Все",
+                "РПП",
+                "Депрессия",
+                "Самооценка",
+                "Нарушение сна"
+            })
+            };
+
+            return View(pf);
         }
 
-    
+            public async Task<IActionResult> Index(SortState sortOrder = SortState.PriceAsc)
+        {
+            IQueryable<Psychologist> psych = _context.Psychologist
+                .Include(p => p.Methods_obj)
+                .Include(p => p.Specialization_obj);
+
+          
+            ViewData["PriceSort"] = sortOrder == SortState.PriceAsc ? SortState.PriceDesc : SortState.PriceAsc;
+
+            psych = sortOrder switch
+            {
+                SortState.PriceAsc => psych.OrderBy(s => s.Price),
+                SortState.PriceDesc => psych.OrderByDescending(s => s.Price),
+                _ => psych.OrderBy(s => s.Name),
+            };
+            return View(await psych.AsNoTracking().ToListAsync());
+        
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Psychologist == null)
