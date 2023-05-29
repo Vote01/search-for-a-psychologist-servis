@@ -4,8 +4,6 @@
     ViewData["Title"] = "Подробнее о сессии";
 }
 
-<h1>Details</h1>
-
 <div>
     <h4>Подробнее о сессии</h4>
     <hr />
@@ -22,65 +20,65 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Format_Session)
         </dd>
-        @if (!User.IsInRole("psych"))
-            {
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Name)
+          <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Status_Session)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Psychologist_obj.Name)
+            @Html.DisplayFor(model => model.Status_Session)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Psychologist_obj.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Psychologist_obj.Email)
-        </dd>
-         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Psychologist_obj.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Psychologist_obj.Phone)
-        </dd>
-            }
-            @if (!User.IsInRole("guest"))
-            {
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Client.Name)
+     
+    <dt class = "col-sm-2">
+     Имя Клиента:
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Client.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Client.LastName)
+       Фамилия Клиента:
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Client.LastName)
         </dd>
           <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Client.Email)
+         Почта Клиента:
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Client.Email)
         </dd>
          <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Client.Phone)
+           Телефон Клиента:
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Client.Phone)
         </dd>
-            }
+           <dt class = "col-sm-2">
+            Имя Психолога:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Psychologist_obj.Name)
+        </dd>
+        <dt class = "col-sm-2">
+         Фамилия Психолога:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Psychologist_obj.LastName)
+        </dd>
+        <dt class = "col-sm-2">
+              Почта Психолога:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Psychologist_obj.Email)
+        </dd>
+         <dt class = "col-sm-2">
+            Телефон Психолога:
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Psychologist_obj.Phone)
+        </dd>
+                   @* }*@
     </dl>
 </div>
 <div>
-    @*<a asp-action="Delete" asp-route-id="@Model?.Session_ID">Удалить</a> |*@
-       <a asp-action="Cancel" asp-route-id="@Model?.Session_ID">Отменить</a> |
-          <a asp-action="Complete" asp-route-id="@Model?.Session_ID">Завершить</a> |
+      <a asp-action="EditStatus" asp-route-id="@Model?.Session_ID">Изменить статус</a> |
     <a asp-action="Index">Назад</a>
 </div>

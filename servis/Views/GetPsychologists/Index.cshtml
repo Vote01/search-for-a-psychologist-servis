@@ -1,23 +1,22 @@
 ﻿@*@model IEnumerable<servis.Models.Psychologist>*@
-@model servis.Models.PsychologistFiltr
+@*@model servis.Models.PsychologistFiltr*@
+@model IndexViewModel
 @{
     ViewData["Title"] = "Выбор специалиста";
 }
 
+
 <form method="get">
     <div class="form-inline">
-        <label class="control-label">Метод: </label>
-        @Html.DropDownList("method", Model.MethodsP as SelectList,
-                    htmlAttributes: new { @class = "form-control" })
+        <label>Имя: </label>
+        <input name="name" value="@Model.FilterViewModel.Name" class="form-control" />
+         
+        <label>Метод: </label>
+        <select name="method" asp-items="Model.FilterViewModel.MethodsP" class="form-control"></select>
  
-        <label class="control-label">Специализация: </label>
-        @Html.DropDownList("specialization", Model.SpecializationP as SelectList,
-                htmlAttributes: new { @class = "form-control" })
- 
-        <input type="submit" value="Фильтр" class="btn btn-default" />
+        <input type="submit" value="Фильтр" class="btn btn-outline-dark" />
     </div>
 </form>
-
 <table class="table">
     <thead>
         <tr>
@@ -38,8 +37,11 @@
                 @*@Html.DisplayNameFor(model => model.Info)*@
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSort">
-                Цена
+                 <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.PriceSort)"
+               asp-route-name="@(Model.FilterViewModel.Name)"
+               asp-route-company="@(Model.FilterViewModel.MethodsP)">Цена</a>
+                @*<a asp-action="Index" asp-route-sortOrder="@ViewBag.PriceSort">*@
+                @*Цена*@
             </a>
             </th>
             <th>
@@ -54,7 +56,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Psychologist) {
+@foreach (var item in Model.Users) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -84,3 +86,28 @@
 }
     </tbody>
 </table>
+
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       asp-route-name="@(Model.FilterViewModel.Name)"
+       asp-route-company="@(Model.FilterViewModel.MethodsP)"
+       asp-route-sortorder="@(Model.SortViewModel.Current)"
+       class="btn  btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       asp-route-name="@(Model.FilterViewModel.Name)"
+       asp-route-company="@(Model.FilterViewModel.MethodsP)"
+       asp-route-sortorder="@(Model.SortViewModel.Current)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

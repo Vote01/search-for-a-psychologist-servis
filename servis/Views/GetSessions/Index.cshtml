@@ -18,24 +18,21 @@
             <th>
                 @Html.DisplayNameFor(model => model.Format_Session)
             </th>
-            @*@if (User.IsInRole("admin")||User.IsInRole("guest"))*@
-             @if (!User.IsInRole("psych"))
-            {
              <th>
-                    @Html.DisplayNameFor(model => model.Psychologist_obj)
+                   Имя психолога
             </th>
-            }
-            @*@if (!User.IsInRole("admin") || User.IsInRole("guest"))*@
-            @if (!User.IsInRole("guest"))
-            {
-                 <th>
-                    @Html.DisplayNameFor(model => model.Client)
-            </th>
-            }
              <th>
-                @Html.DisplayNameFor(model => model.Status_Session)
+                   Фамилия психолога
             </th>
-            <th></th>
+           @*  <th>
+                   Имя клиента
+            </th>
+             <th>
+                   Фамилия клиента
+            </th>*@
+             <th>
+                 Статус
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -47,20 +44,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Format_Session)
             </td>
-                @*@if (User.IsInRole("admin") || User.IsInRole("guest"))*@
-                  @if (!User.IsInRole("psych"))
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Psychologist_obj.Name)
-                    </td>                
-
-                }
-                @if (!User.IsInRole("guest"))
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Client.Name)
-                    </td>                
-                }
+            <td>
+                  @Html.DisplayFor(modelItem => item.Psychologist_obj.Name)
+              </td>    
+               <td>
+                  @Html.DisplayFor(modelItem => item.Psychologist_obj.LastName)
+              </td>    
+               @* <td>
+                       @Html.DisplayFor(modelItem => item.Client.Name)
+                </td>  
+                <td>
+                    @Html.DisplayFor(modelItem => item.Client.LastName)
+               </td>  *@
                <td>
                 @Html.DisplayFor(modelItem => item.Status_Session)
                </td>

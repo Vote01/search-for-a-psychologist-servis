@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using servis.Models;
 using OfficeOpenXml;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace servis.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class GetSessionsController : Controller
     {
         private readonly PsychologistDBContext _context;
@@ -51,39 +52,125 @@ namespace servis.Controllers
 
             return View(getSession);
         }
-        public IActionResult Cancel()
+        //public IActionResult Cancel()
+        //{
+        //    ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name");
+        //    ViewData["Client"] = new SelectList(_context.Psychologist, "ID", "Name");
+        //    return View();
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Cancel(int? id)
+        //{
+        //    if (id == null || _context.GetSession == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var getSession = await _context.GetSession
+        //        .Include(g => g.Psychologist_obj)
+        //        .Include(g => g.Client)
+        //        .FirstOrDefaultAsync(m => m.Session_ID == id);
+        //    if (getSession == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        getSession.Status_Session = Status.Cancelled;
+        //        _context.Update(getSession);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }    
+        //    return View(getSession);
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Complete(int? id)
+        //{
+
+        //    if (id == null || _context.GetSession == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var getSession = await _context.GetSession
+        //        .Include(g => g.Psychologist_obj)
+        //        .Include(g => g.Client)
+        //        .FirstOrDefaultAsync(m => m.Session_ID == id);
+        //    if (getSession == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        getSession.Status_Session = Status.Completed;
+        //        _context.Update(getSession);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(getSession);
+        //}
+
+
+        public async Task<IActionResult> EditStatus(int? id)
         {
-            ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name");
-            ViewData["Client"] = new SelectList(_context.Psychologist, "ID", "Name");
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cancel([Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId,ClientID, Status_Session")] GetSession getSession)
-        {
-            if (ModelState.IsValid)
+            if (id == null || _context.GetSession == null)
             {
-                getSession.Status_Session = Status.Cancelled;
-                _context.Add(getSession);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }    
-            return View(getSession);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Complete([Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId,ClientID, Status_Session")] GetSession getSession)
-        {
-            if (ModelState.IsValid)
-            {
-                getSession.Status_Session = Status.Completed;
-                _context.Add(getSession);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
+
+            var getSession = await _context.GetSession.FindAsync(id);
+            if (getSession == null)
+            {
+                return NotFound();
+            }
+            //ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name", getSession.Psychologist_objId);
+            //ViewData["Client"] = new SelectList(_context.Psychologist, "ID", "Name", getSession.ClientID);
             return View(getSession);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStatus(int id, [Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId,ClientID,Status_Session")] GetSession getSession, int ClientID, int Psychologist_objId)
+        {
+
+            getSession.Psychologist_obj= await _context.Psychologist.FindAsync(Psychologist_objId);
+            getSession.Client= await _context.Client.FindAsync(ClientID);
+            //var psychologist = await _context.Psychologist.FindAsync(id);
+            //var client = await _context.Client.FindAsync();
+            if (id != getSession.Session_ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(getSession);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!GetSessionExists(getSession.Session_ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            //  ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name", getSession.Psychologist_objId);
+            // ViewData["Client"] = new SelectList(_context.Psychologist, "ID", "Name", getSession.ClientID);
+            return RedirectToAction(nameof(Index));
+          //  return View(getSession);
+        }
 
 
 
@@ -96,7 +183,7 @@ namespace servis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId")] GetSession getSession)
+        public async Task<IActionResult> Create([Bind("Session_ID,Date_Session,Format_Session,Status_Session,Psychologist_objId")] GetSession getSession)
         {
             if (ModelState.IsValid)
             {
@@ -127,7 +214,7 @@ namespace servis.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Session_ID,Date_Session,Format_Session,Psychologist_objId")] GetSession getSession)
+        public async Task<IActionResult> Edit(int id, [Bind("Session_ID,Date_Session,Format_Session,Status_Session ,Psychologist_objId")] GetSession getSession)
         {
             if (id != getSession.Session_ID)
             {
@@ -155,6 +242,9 @@ namespace servis.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Psychologist_objId"] = new SelectList(_context.Psychologist, "ID", "Name", getSession.Psychologist_objId);
+
+          //  await _context.SaveChangesAsync();
+            ///return RedirectToAction(nameof(Index)); 
             return View(getSession);
         }
 
