@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using servis.Areas.Identity.Data;
+using servis.Models;
 
 namespace servis.Areas.Identity.Pages.Account
 {
@@ -31,13 +32,15 @@ namespace servis.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly PsychologistDBContext _context;
         public RegisterModel(
             UserManager<servisUser> userManager,
             IUserStore<servisUser> userStore,
             SignInManager<servisUser> signInManager,
             ILogger<RegisterModel> logger,
            // IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            PsychologistDBContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -46,6 +49,7 @@ namespace servis.Areas.Identity.Pages.Account
             _logger = logger;
             //_emailSender = emailSender;
             _roleManager = roleManager;
+            _context = context;
         }
 
         [BindProperty]
@@ -72,6 +76,17 @@ namespace servis.Areas.Identity.Pages.Account
             [DataType(DataType.Text)]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
+
+            [Required]
+            [DataType(DataType.PhoneNumber)]
+            [RegularExpression(@"^\(?([0-9]{1})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Формат номера неправильный")]
+
+            [Display(Name = "Телефон")]
+            public string PhoneNumber { get; set; }
+            [Required]
+           
+            [Display(Name = "Возраст")]
+            public int Year { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -101,11 +116,22 @@ namespace servis.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                Client client = new Client();
 
+                client.Name = Input.FirstName;
+                client.LastName = Input.LastName;
+                client.Year = Input.Year;
+                client.Phone = Input.PhoneNumber;
+                client.Email = Input.Email;
+                //client.UserId = userId;
+                _context.Add(client);
+                await _context.SaveChangesAsync();
                 var user = CreateUser();
-
+                user.ModelID = client.ID;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
+                user.Year = Input.Year;
+                user.Phone = Input.PhoneNumber;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -125,6 +151,7 @@ namespace servis.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+                  
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);

@@ -29,6 +29,8 @@ namespace servis.Models
 
         [Display(Name = "Статус")]
         public Status Status_Session { get; set; }
+        [Display(Name = "Отзыв")]
+        public string? Feedback { get; set; }
 
     }
 
@@ -44,12 +46,18 @@ namespace servis.Models
     {
         [Display(Name = "Ожидается")]
         Wait,
-        [Display(Name = "Завершена")]
+        [Display(Name = "Отменена")]
+        Cancelled,
+              [Display(Name = "Завершена")]
         [Description("Завершена")]
-        Completed,
-        //[Description("Отменена")]
+        Completed
+    }
+    public enum StatusClient
+    {
+        [Display(Name = "Ожидается")]
+        Wait,
+       
         [Display(Name = "Отменена")]
         Cancelled
     }
-
 }

@@ -1,0 +1,40 @@
+﻿@model servis.Models.GetSession
+
+@{
+    ViewData["Title"] = "Оставить отзыв";
+}
+
+<h1>Оставить отзыв о прошедшей сессии</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="StatusComp">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Session_ID" />
+             <input type="hidden" asp-for="Date_Session" />
+            <input type="hidden" asp-for="Format_Session" />
+             <input type="hidden" asp-for="Psychologist_objId" />
+              <input type="hidden" asp-for="Status_Session" />
+                 <input type="hidden" asp-for="ClientID" />
+                  <p>Отзыв: </p>
+               @Html.TextArea("Feedback", " ")
+               @*<div class="form-group">
+                 <label asp-for="Feedback" class="control-label"></label>
+                <input asp-for="Feedback" class="form-control" />
+                <span asp-validation-for="Feedback" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Написать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Обратно</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

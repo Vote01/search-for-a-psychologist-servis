@@ -157,6 +157,7 @@ namespace servis.Controllers
             session.Client = client;
             session.ClientID = idC;
             session.Status_Session = Status.Wait;
+            session.Feedback = "нет отзыва";
             _context.Add(session);
             _context.SaveChanges();
             ViewBag.Date_Session = Date_Session.ToLongDateString() + " " + Date_Session.ToShortTimeString();

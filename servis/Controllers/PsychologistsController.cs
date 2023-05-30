@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace servis.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, psych")]
     public class PsychologistsController : Controller
     {
         private readonly PsychologistDBContext _context;

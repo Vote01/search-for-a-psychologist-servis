@@ -54,11 +54,12 @@
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Назад</a>
-</div>
-
+@if (User.IsInRole("admin"))
+{
+    <div>
+        <a asp-action="Index">Назад</a>
+    </div>
+}
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

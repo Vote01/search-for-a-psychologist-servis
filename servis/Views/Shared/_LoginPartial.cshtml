@@ -8,6 +8,31 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+     if (User.IsInRole("guest"))
+        {
+            <li class="nav-item">
+                @using (Html.BeginForm($"Details", "Clients", FormMethod.Get))
+                {
+                    <div>
+                        <input type="hidden" name="id" value="@((await UserManager.GetUserAsync(User)).ModelID)">
+                        <input type="submit" value="Профиль" class="nav-link btn btn-link text-dark">
+                    </div>
+                }
+            </li>
+        }
+        if (User.IsInRole("psych"))
+        {
+            <li class="nav-item">
+                @using (Html.BeginForm($"Details", "Psychologist", FormMethod.Get))
+                {
+                    <div>
+                        <input type="hidden" name="id" value="@((await UserManager.GetUserAsync(User)).ModelID)">
+                        <input type="submit" value="Профиль" class="nav-link btn btn-link text-dark">
+                    </div>
+                }
+            </li>
+        }
+
     <li class="nav-item">
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
     </li>

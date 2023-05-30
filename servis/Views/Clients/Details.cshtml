@@ -48,7 +48,11 @@
       
     </dl>
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Редактировать</a> |
+   @if (User.IsInRole("admin"))
+{
     <a asp-action="Index">Назад</a>
+}
 </div>

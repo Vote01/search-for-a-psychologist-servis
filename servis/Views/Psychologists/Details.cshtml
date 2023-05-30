@@ -72,7 +72,10 @@
         </dd>
     </dl>
 </div>
+@if (User.IsInRole("admin"))
+{
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Редактировать</a> |
     <a asp-action="Index">Обратно</a>
 </div>
+}

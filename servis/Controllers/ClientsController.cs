@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace servis.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin, guest")]
     public class ClientsController : Controller
     {
         private readonly PsychologistDBContext _context;
@@ -161,7 +161,15 @@ namespace servis.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if(User.IsInRole("admin"))
+                        {
+                    return RedirectToAction(nameof(Index));
+                }
+                if (User.IsInRole("guest"))
+                {
+                    //return View(Details(id));
+                       // return RedirectToAction(nameof(Details));
+                }
             }
             return View(client);
         }

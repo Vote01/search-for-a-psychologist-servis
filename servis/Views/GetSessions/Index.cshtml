@@ -24,12 +24,12 @@
              <th>
                    Фамилия психолога
             </th>
-           @*  <th>
+             <th>
                    Имя клиента
             </th>
              <th>
                    Фамилия клиента
-            </th>*@
+            </th>
              <th>
                  Статус
             </th>
@@ -50,25 +50,34 @@
                <td>
                   @Html.DisplayFor(modelItem => item.Psychologist_obj.LastName)
               </td>    
-               @* <td>
+                <td>
                        @Html.DisplayFor(modelItem => item.Client.Name)
                 </td>  
                 <td>
                     @Html.DisplayFor(modelItem => item.Client.LastName)
-               </td>  *@
+               </td>  
                <td>
                 @Html.DisplayFor(modelItem => item.Status_Session)
                </td>
                 <td>
-                <a asp-action="Details" asp-route-id="@item.Session_ID">Детали</a>            
+          @if ((User.IsInRole("guest"))&&(item.Status_Session==Status.Completed))
+                    {
+                         <form asp-action="StatusComp" asp-route-id="@item.Session_ID">      
+                     <input type="submit" value="Написать отзыв" class="btn btn-success" />
+                      </form>
+                       @*    <a asp-action="StatusComp" asp-route-id="@item.Session_ID">Написать отзыв</a>   *@
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Session_ID">Детали</a>            
             </td>
         </tr>
 }
     </tbody>
 </table>
-<div>
-     <form asp-action="GetReport">      
-        <input type="submit" value="Скачать отчёт" class="btn btn-success" />
-    </form>
-</div>
-
+@if (User.IsInRole("admin"))
+{
+    <div>
+        <form asp-action="GetReport">      
+            <input type="submit" value="Скачать отчёт" class="btn btn-success" />
+        </form>
+    </div>
+}

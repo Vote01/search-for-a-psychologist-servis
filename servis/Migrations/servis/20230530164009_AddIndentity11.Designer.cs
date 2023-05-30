@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using servis.Data;
 
@@ -11,9 +12,10 @@ using servis.Data;
 namespace servis.Migrations.servis
 {
     [DbContext(typeof(servisContext))]
-    partial class servisContextModelSnapshot : ModelSnapshot
+    [Migration("20230530164009_AddIndentity11")]
+    partial class AddIndentity11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

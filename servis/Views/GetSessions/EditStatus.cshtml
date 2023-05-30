@@ -15,17 +15,23 @@
              <input type="hidden" asp-for="Date_Session" />
             <input type="hidden" asp-for="Format_Session" />
              <input type="hidden" asp-for="Psychologist_objId" />
-             
-             <input type="hidden" asp-for="ClientID" />
+              <input type="hidden" asp-for="Feedback" />
+               <input type="hidden" asp-for="ClientID" />
+        @if (User.IsInRole("admin") || User.IsInRole("psych"))
+{
                <div class="form-group">
                 <label asp-for="Status_Session" class="control-label"></label>
                 <select asp-for="Status_Session" class ="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
             </div>
-            @*<div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Status_Session" /> @Html.DisplayNameFor(model => model.Status_Session)
-                </label>
-            </div>*@
+}
+      @if (User.IsInRole("guest"))
+            {
+                
+               <div class="form-group">
+                <label asp-for="Status_Session" class="control-label"></label>
+                <select asp-for="Status_Session" class ="form-control" asp-items="Html.GetEnumSelectList<StatusClient>()"></select>
+            </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Изменить" class="btn btn-primary" />
             </div>
