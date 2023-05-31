@@ -76,24 +76,36 @@
             @Html.DisplayFor(model => model.Psychologist_obj.Phone)
         </dd>
  
-           @if ((User.IsInRole("admin"))&&(Model.Status_Session==Status.Completed))
+           @if (User.IsInRole("admin"))
         {
+             <div> @if (Model.Status_Session == Status.Completed)
+            {
                 <dt class = "col-sm-2">
                     Отзыв:
                 </dt>
                 <dd class = "col-sm-10">
                     @Html.DisplayFor(model => model.Feedback)
                 </dd>
-           
+             
+        }>
+
+       </div>
         }
     </dl>
 </div>
 <div>
-    <div @{if (Model.Status_Session == Status.Wait){<text>class="@Model.Status_Session"</text>}}>
-   <a asp-action="EditStatus" asp-route-id="@Model?.Session_ID">Изменить статус</a> |
+    @*<div> @if (Model.Status_Session == Status.Wait)
+            {
+                   <a asp-action="EditStatus" asp-route-id="@Model?.Session_ID">Изменить статус</a> |
+            
+        }
        </div>
-   @* @if (model.Status_Session == Status.Wait){
-      <a asp-action="EditStatus" asp-route-id="@Model?.Session_ID">Изменить статус</a> |
-            }*@
+*@
+       <div> 
+            @if (Model.Status_Session == Status.Wait){ 
+           <a asp-action="EditStatus" asp-route-id="@Model?.Session_ID">Изменить статус </a> 
+              }
+                               
+        </div>
     <a asp-action="Index">Назад</a>
 </div>

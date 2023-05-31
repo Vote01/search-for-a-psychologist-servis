@@ -61,6 +61,11 @@
                 @Html.DisplayFor(modelItem => item.Specialization_obj.Special_Name)
             </td>
             <td>
+                <div> 
+            @if (item.Profile == false){ 
+               <a asp-action="Profile" asp-route-id="@item.ID">Зарегестрировать</a> 
+                               }
+                              </div>
                 <a asp-action="Edit" asp-route-id="@item.ID">Редактировать</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Детали</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Удалить</a>

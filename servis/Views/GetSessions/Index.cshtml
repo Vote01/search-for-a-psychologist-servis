@@ -60,12 +60,16 @@
                 @Html.DisplayFor(modelItem => item.Status_Session)
                </td>
                 <td>
-          @if ((User.IsInRole("guest"))&&(item.Status_Session==Status.Completed))
+          @if (User.IsInRole("guest"))
                     {
-                         <form asp-action="StatusComp" asp-route-id="@item.Session_ID">      
-                     <input type="submit" value="Написать отзыв" class="btn btn-success" />
-                      </form>
-                       @*    <a asp-action="StatusComp" asp-route-id="@item.Session_ID">Написать отзыв</a>   *@
+                      
+                               <div> 
+                                   @if (item.Status_Session == Status.Completed){ 
+                                       <a asp-action="StatusComp" asp-route-id="@item.Session_ID">Написать отзыв </a> 
+                               }
+                               
+                              </div>
+                            
                     }
                     <a asp-action="Details" asp-route-id="@item.Session_ID">Детали</a>            
             </td>

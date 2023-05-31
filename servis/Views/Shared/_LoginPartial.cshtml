@@ -23,7 +23,7 @@
         if (User.IsInRole("psych"))
         {
             <li class="nav-item">
-                @using (Html.BeginForm($"Details", "Psychologist", FormMethod.Get))
+                @using (Html.BeginForm($"Details", "Psychologists", FormMethod.Get))
                 {
                     <div>
                         <input type="hidden" name="id" value="@((await UserManager.GetUserAsync(User)).ModelID)">

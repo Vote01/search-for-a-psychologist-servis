@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using servis.Models;
 using Microsoft.AspNetCore.Authorization;
 using OfficeOpenXml;
+using servis.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using servis.Areas.Identity.Pages.Account;
+using Microsoft.AspNetCore.Authentication;
 
 namespace servis.Controllers
 {
@@ -17,12 +23,38 @@ namespace servis.Controllers
         private readonly PsychologistDBContext _context;
         private readonly IWebHostEnvironment _appEnvironment;
 
+        private readonly SignInManager<servisUser> _signInManager;
+        private readonly UserManager<servisUser> _userManager;
+        private readonly IUserStore<servisUser> _userStore;
+        private readonly IUserEmailStore<servisUser> _emailStore;
+        private readonly ILogger<RegisterModel> _logger;
+        private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+     
 
-        public PsychologistsController(PsychologistDBContext context, IWebHostEnvironment appEnvironment)
+        public PsychologistsController(PsychologistDBContext context, 
+            IWebHostEnvironment appEnvironment,
+             UserManager<servisUser> userManager,
+            IUserStore<servisUser> userStore,
+            SignInManager<servisUser> signInManager,
+            ILogger<RegisterModel> logger,
+            // IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _appEnvironment = appEnvironment;
+            _userManager = userManager;
+            _userStore = userStore;
+            _emailStore = GetEmailStore();
+            _signInManager = signInManager;
+            _logger = logger;
+            _roleManager = roleManager;
         }
+        
+        public string ReturnUrl { get; set; }
+
+
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         // GET: Psychologists
         public async Task<IActionResult> Index()
@@ -180,6 +212,113 @@ namespace servis.Controllers
             ViewData["Specialization_objId"] = new SelectList(_context.Specialization, "Special_ID", "Special_Name", psychologist.Specialization_objId);
             return View(psychologist);
         }
+
+
+        public async Task<IActionResult> Profile(int? id)
+        {
+            if (id == null || _context.Psychologist == null)
+            {
+                return NotFound();
+            }
+
+            var psychologist = await _context.Psychologist.FindAsync(id);
+            if (psychologist == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Methods_objId"] = new SelectList(_context.Methods, "Methods_ID", "Methods_Name", psychologist.Methods_objId);
+            ViewData["Specialization_objId"] = new SelectList(_context.Specialization, "Special_ID", "Special_Name", psychologist.Specialization_objId);
+            ViewBag.ID = psychologist.ID;
+
+            return View(psychologist);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(int ID, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone, Photo, Profile, Password")] Psychologist psychologist)
+        {
+            //var psychologist = await _context.Psychologist.FindAsync(ID);
+            
+            if (psychologist == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                
+                    var user = CreateUser();
+                    user.ModelID = psychologist.ID;
+                    user.FirstName = psychologist.Name;
+                    user.LastName = psychologist.LastName;
+                    user.Year = psychologist.Year;
+                    user.Phone = psychologist.Phone;
+
+                    await _userStore.SetUserNameAsync(user, psychologist.Email, CancellationToken.None);
+                    await _emailStore.SetEmailAsync(user, psychologist.Email, CancellationToken.None);
+                    var result = await _userManager.CreateAsync(user,psychologist.Password);
+
+                    //returnUrl ??= Url.Content("~/");
+                    ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                    if (result.Succeeded)
+                    {
+                        if (!await _roleManager.RoleExistsAsync("psych"))
+                           await _roleManager.CreateAsync(new IdentityRole("psych"));
+                        
+                        await _userManager.AddToRoleAsync(user, "psych");
+                        _logger.LogInformation("User created a new account with password.");
+
+                        var userId = await _userManager.GetUserIdAsync(user);
+
+
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        psychologist.Profile = true;
+                       _context.Update(psychologist);
+                         await _context.SaveChangesAsync();
+                    //  return LocalRedirect(returnUrl);
+                }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                  
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+           // return View(psychologist);
+        }
+        public async Task OnGetAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl;
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        }
+        private servisUser CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<servisUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(servisUser)}'. " +
+                    $"Ensure that '{nameof(servisUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+        }
+
+        private IUserEmailStore<servisUser> GetEmailStore()
+        {
+            if (!_userManager.SupportsUserEmail)
+            {
+                throw new NotSupportedException("The default UI requires a user store with email support.");
+            }
+            return (IUserEmailStore<servisUser>)_userStore;
+        }
+
+      
 
         // GET: Psychologists/Delete/5
         public async Task<IActionResult> Delete(int? id)
