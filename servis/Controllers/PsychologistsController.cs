@@ -109,8 +109,11 @@ namespace servis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone")] Psychologist psychologist, IFormFile upload)
+        public async Task<IActionResult> Create([Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone, Profile, Password")] Psychologist psychologist, IFormFile upload)
         {
+
+          //  psychologist.Profile = false;
+           // psychologist.Password = null;
             if (ModelState.IsValid)
             {
                 if (upload != null)
@@ -166,7 +169,7 @@ namespace servis.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone")] Psychologist psychologist, IFormFile? upload)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,LastName,Year,Info,Price,Methods_objId,Specialization_objId, Email, Phone, Profile, Password")] Psychologist psychologist, IFormFile? upload)
         {
             if (id != psychologist.ID)
             {
